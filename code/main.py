@@ -74,10 +74,23 @@ class GetAllData(webapp2.RequestHandler):
         return self.response.out.write(json.encode(data))
 
 
+class Woof(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'application/json'
+        data = {
+            'owners': [owner.to_json() for owner in DogOwner.query()],
+            'walkers': [walker.to_json() for walker in DogWalker.query()],
+            'requests': [request.to_json() for request in WalkRequest.query()],
+        }
+        return self.response.out.write(json.encode(data))
+
+
+
 app = webapp2.WSGIApplication([
     ('/create/walker', CreateWalker),
     ('/create/owner', CreateOwner),
     ('/create/request', CreateRequest),
     ('/delete/request', DeleteRequest),
     ('/get', GetAllData),
+    ('/woof', CreateWoof),
 ])
